@@ -28,6 +28,9 @@ if not os.path.exists(MODEL_PATH):
     print("Modelo descargado.")
 
 model = YOLO(MODEL_PATH)
+model.overrides['imgsz'] = 640
+model.overrides['conf'] = 0.35
+model.overrides['device'] = 'cpu'
 print("Modelo listo.")
 
 # Mapeo de clases
@@ -44,7 +47,9 @@ def health_check():
 async def predict_nodo_cerrado(file: UploadFile = File(...)):
     contents = await file.read()
     image = Image.open(io.BytesIO(contents)).convert("RGB")
-    results = model(image)
+    # Reducir tamaño para ahorrar RAM en plan Free
+    image = image.resize((640, 640))
+    results = model(image, imgsz=640, verbose=False)
 
     # Variables de detección
     gabinete_valido   = False
