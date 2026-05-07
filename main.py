@@ -31,7 +31,7 @@ if not os.path.exists(MODEL_PATH):
 
 model = YOLO(MODEL_PATH)
 model.overrides['imgsz'] = 640
-model.overrides['conf'] = 0.35
+model.overrides['conf'] = 0.15   # bajado de 0.35 → permite ver detecciones de baja confianza
 model.overrides['device'] = 'cpu'
 print("Modelo listo.")
 
@@ -86,13 +86,13 @@ def _run_detection(image: Image.Image):
             })
 
             if class_id == 1 and confianza > conf_gabinete:
-                gabinete_valido = confianza >= 0.60
+                gabinete_valido = confianza >= 0.40   # bajado de 0.60
                 conf_gabinete   = confianza
                 region_gabinete = region
                 coords_gabinete = [round(c, 1) for c in bbox]
 
             if class_id == 0 and confianza > conf_etiqueta:
-                etiqueta_valida = confianza >= 0.55
+                etiqueta_valida = confianza >= 0.30   # bajado de 0.55
                 conf_etiqueta   = confianza
                 region_etiqueta = region
                 coords_etiqueta = [round(c, 1) for c in bbox]
